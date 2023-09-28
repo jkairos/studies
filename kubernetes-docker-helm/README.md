@@ -84,7 +84,7 @@ http://localhost:8080/swagger-ui/index.html#
 helm create demo-backend
 ```
 
-2.**Rename the crated demo-backend folder to helm**:
+2.**Rename the created demo-backend folder to helm**:
 
 3.**Change the values.yaml file**:
 ```
