@@ -1,0 +1,56 @@
+# ----------------------------------------------------------------------
+# Spring bootstrap config file (loads with parent application context)
+# ----------------------------------------------------------------------
+spring:
+  application:
+    name: '@project.artifactId@'
+  zipkin:
+    enabled: false
+  mustache:
+    check-template-location: false
+
+# ----------------------------------------------------------------------
+# SpringBoot - Logging Configuration
+# ----------------------------------------------------------------------
+logging:
+  level:
+    com.cox.oss.pet: ${SERVICE_LOGGING_LEVEL:INFO}
+    org.springframework.cloud.kubernetes.fabric8.leader: ERROR
+    org.springframework.cloud.kubernetes.fabric8.config: ERROR
+    root: ${ROOT_LOGGING_LEVEL:WARN}
+
+# ----------------------------------------------------------------------
+# SpringBoot - Actuator Configuration
+# ----------------------------------------------------------------------
+management:
+  server:
+    port: ${ACTUATOR_PORT:9090}
+  security:
+    enabled: false
+  endpoints:
+    web:
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+# ----------------------------------------------------------------------
+# Administration REST - Service Custom Configuration
+# ----------------------------------------------------------------------
+server:
+  shutdown: graceful
+  forward-headers-strategy: framework
+  ssl:
+    enabled: ${TLS_ENABLED:false}
+
+event:
+  listener:
+    retryTime: ${EVENT_LISTENER_RETRY_TIME:15000}
+
