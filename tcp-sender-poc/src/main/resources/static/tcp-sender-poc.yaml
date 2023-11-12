@@ -1,0 +1,96 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: TCPSenderPoC
+  license:
+    name: MIT
+servers:
+  - url: http://tcp-sender-poc/v1
+paths:
+  "/send":
+    post:
+      summary: Sends an array of bytes to a given IP address
+      operationId: sendTcpData
+      requestBody:
+        $ref: '#/components/requestBodies/sendRequest'
+      tags:
+        - TCP Sender
+      responses:
+        '202':
+          description: Base64-encoded Binary Data Received (only if waitForResponse is false)
+        '200':
+          description: Base64-encoded Binary Data Received (only if waitForResponse is true)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  binaryData:
+                    type: string
+                    format: base64
+                    description: Base64-encoded binary data response.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServer'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    TcpData:
+      required:
+      - ipAddress
+      - binaryData
+      properties:
+        ipAddress:
+          type: string
+          format: ipv4
+          description: IP Address of the device.
+          example: 192.168.1.1
+        macAddress:
+          type: string
+          format: mac
+          description: Optional MAC Address of the device.
+          example: 01:2a:3b:4c:5d:6e
+        binaryData:
+          type: string
+          format: base64
+          description: Base64-encoded binary data.
+          example: VGhpcyBpcyBhIHRlc3QgZGF0YQ==
+        waitForResponse:
+          type: boolean
+          description: Specify whether to wait for a response. Set to true for waiting, false otherwise.
+          example: false
+    Error:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  requestBodies:
+    sendRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/TcpData"
+
+  responses:
+    BadRequest:
+      $ref: 'tcp-sender-poc-responses-model.yaml#/components/responses/BadRequest'
+    NotFound:
+      $ref: 'tcp-sender-poc-responses-model.yaml#/components/responses/NotFound'
+    InternalServer:
+      $ref: 'tcp-sender-poc-responses-model.yaml#/components/responses/InternalServer'
